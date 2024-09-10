@@ -73,7 +73,7 @@ class _ProductDetailState extends State<ProductDetail> {
             ),
             const SizedBox(height: 8),
             Text(
-              "${widget.price}",
+              widget.price,
               style: const TextStyle(fontSize: 20, color: Colors.green),
             ),
             const SizedBox(height: 16),
@@ -112,11 +112,11 @@ class _ProductDetailState extends State<ProductDetail> {
                   child: Row(
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.horizontal(left: Radius.circular(30)),
+                        borderRadius: const BorderRadius.horizontal(left: Radius.circular(30)),
                         child: Container(
                           color: Colors.grey[400], // Darker background for left button
                           child: IconButton(
-                            icon: Icon(Icons.remove),
+                            icon: const Icon(Icons.remove),
                             onPressed: _decrementQuantity,
                           ),
                         ),
@@ -134,11 +134,11 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                       ClipRRect(
-                        borderRadius: BorderRadius.horizontal(right: Radius.circular(30)),
+                        borderRadius: const BorderRadius.horizontal(right: Radius.circular(30)),
                         child: Container(
                           color: Colors.grey[400], // Darker background for right button
                           child: IconButton(
-                            icon: Icon(Icons.add),
+                            icon: const Icon(Icons.add),
                             onPressed: _incrementQuantity,
                           ),
                         ),

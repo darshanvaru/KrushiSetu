@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:krushi_setu/screens/product_detail.dart';
 
 class Marketplace extends StatefulWidget {
+  const Marketplace({super.key});
+
   @override
   _MarketplaceState createState() => _MarketplaceState();
 }
@@ -36,7 +38,6 @@ class _MarketplaceState extends State<Marketplace> {
         throw Exception('Failed to load products');
       }
     } catch (error) {
-      print('Error fetching products: $error');
       setState(() {
         isLoading = false;
       });
@@ -47,11 +48,11 @@ class _MarketplaceState extends State<Marketplace> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Marketplace'),
+        title: const Text('Marketplace'),
         centerTitle: true,
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, index) {
@@ -102,7 +103,7 @@ class _MarketplaceState extends State<Marketplace> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(productPrice),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Row(
                       children: [
                         CircleAvatar(
@@ -110,10 +111,10 @@ class _MarketplaceState extends State<Marketplace> {
                           backgroundColor: Colors.grey[200],
                           child: Text(
                             sellerName[0], // Display first letter of seller's name
-                            style: TextStyle(fontSize: 12),
+                            style: const TextStyle(fontSize: 12),
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           sellerName,
                           style: TextStyle(
