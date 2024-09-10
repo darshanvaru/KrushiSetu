@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
   http: ^1.2.2
   cupertino_icons: ^1.0.6
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -26,4 +27,5 @@ flutter:
     - assets/farmer2.jpg
     - assets/farmer3.jpg
     - assets/farmer4.jpg
+    - assets/.env
   uses-material-design: true

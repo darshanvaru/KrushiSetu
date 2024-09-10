@@ -4,12 +4,18 @@ import '../screens/product_detail.dart';
 class ProductCard extends StatelessWidget {
   final String title;
   final String price;
-  final String owner;
-  final String ownerUrl;
-  final String imageUrl;
-  final Function(Map<String, dynamic>) onAddToCart; // Added onAddToCart
+  final String sellerName;
+  final String productImageUrl;
+  final String sellerImageUrl;
 
-  const ProductCard(this.title, this.price, this.owner, this.imageUrl, this.ownerUrl, {required this.onAddToCart, super.key});
+  const ProductCard({
+    required this.title,
+    required this.price,
+    required this.sellerName,
+    required this.productImageUrl,
+    required this.sellerImageUrl,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +27,9 @@ class ProductCard extends StatelessWidget {
             builder: (context) => ProductDetail(
               title: title,
               price: price,
-              owner: owner,
-              imageUrl: imageUrl,
-              ownerUrl: ownerUrl,
-              onAddToCart: onAddToCart, // Pass the onAddToCart function
+              owner: sellerName,
+              imageUrl: productImageUrl,
+              ownerUrl: sellerImageUrl,
             ),
           ),
         );
@@ -37,15 +42,15 @@ class ProductCard extends StatelessWidget {
           children: [
             AspectRatio(
               aspectRatio: 1,
-              child: Image.asset(
-                imageUrl,
+              child: Image.network(
+                productImageUrl,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: Colors.grey[200],
                     child: const Center(
                       child: Text(
-                        "Image not found",
+                        "Photo error",
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Colors.grey),
                       ),
@@ -71,8 +76,8 @@ class ProductCard extends StatelessWidget {
                   radius: 10,
                   backgroundColor: Colors.grey[200],
                   child: ClipOval(
-                    child: Image.asset(
-                      ownerUrl,
+                    child: Image.network(
+                      sellerImageUrl,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,
@@ -83,7 +88,7 @@ class ProductCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 5),
-                Text(owner, style: const TextStyle(fontSize: 12)),
+                Text(sellerName, style: const TextStyle(fontSize: 12)),
               ],
             ),
           ],
