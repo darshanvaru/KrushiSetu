@@ -48,12 +48,8 @@ class ProductCard extends StatelessWidget {
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     color: Colors.grey[200],
-                    child: const Center(
-                      child: Text(
-                        "Photo error",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.grey),
-                      ),
+                    child: Center(
+                      child: Icon(Icons.person, size: 60, color: Colors.grey[400]),
                     ),
                   );
                 },
@@ -69,20 +65,18 @@ class ProductCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Text(price, style: const TextStyle(color: Colors.green)),
+            Text(price, style: const TextStyle(fontSize: 20, color: Colors.green)),
             Row(
               children: [
                 CircleAvatar(
-                  radius: 10,
+                  radius: 20,
                   backgroundColor: Colors.grey[200],
                   child: ClipOval(
                     child: Image.network(
                       sellerImageUrl,
-                      width: 60,
-                      height: 60,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
-                        return Icon(Icons.person, size: 30, color: Colors.grey[400]);
+                        return Icon(Icons.person, size: 17, color: Colors.grey[400]);
                       },
                     ),
                   ),

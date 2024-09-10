@@ -1,10 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:krushi_setu/screens/sign_up.dart';
-
 import 'home.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailOrMobileController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  Future<void> _login() async {
+    final emailOrMobile = _emailOrMobileController.text;
+    final password = _passwordController.text;
+
+    final response = await http.post(
+      Uri.parse('http://10.150.150.1:5050/api/v1/users/login'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': emailOrMobile,
+        'password': password,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Login Successful')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+    } else {
+      final errorResponse = jsonDecode(response.body);
+      final errorMessage = errorResponse['message'] ?? 'Login Failed';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +70,9 @@ class LoginScreen extends StatelessWidget {
 
               // Email or Mobile no. input
               SizedBox(
-                width: screenWidth * 0.85, // Dynamic width based on screen size
+                width: screenWidth * 0.85,
                 child: TextFormField(
+                  controller: _emailOrMobileController,
                   decoration: const InputDecoration(
                     labelText: 'Email or Mobile no.',
                     border: OutlineInputBorder(),
@@ -39,8 +84,9 @@ class LoginScreen extends StatelessWidget {
 
               // Password input
               SizedBox(
-                width: screenWidth * 0.85, // Dynamic width based on screen size
+                width: screenWidth * 0.85,
                 child: TextFormField(
+                  controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
@@ -49,10 +95,10 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
 
-              //forgot password
+              // Forgot password
               const Align(
                 alignment: Alignment.centerRight,
-                child:SizedBox(height: 10),
+                child: SizedBox(height: 10),
               ),
               Align(
                 alignment: Alignment.centerRight,
@@ -65,19 +111,13 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               SizedBox(
-                width: screenWidth * 0.85, // Dynamic width based on screen size
+                width: screenWidth * 0.85,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-
-                    //login button
+                    // Login button
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const HomeScreen()),
-                        );
-                      },
+                      onPressed: _login,
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(150, 50),
                       ),
@@ -88,8 +128,6 @@ class LoginScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text("Don't have an account?"),
-
-                        //sign up button
                         TextButton(
                           onPressed: () {
                             Navigator.push(

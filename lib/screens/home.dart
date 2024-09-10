@@ -6,30 +6,39 @@ import '../services/product_service.dart'; // Import the service
 import '../models/product.dart';
 import 'marketplace.dart'; // Adjust the import path as necessary
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super .key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String _userName = 'User';
+  String _userLocation = 'Location';
+  bool _isSearchVisible = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.person),
-        title: const Column(
+        title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Darshan Varu"),
-            Text("Rajkot", style: TextStyle(fontSize: 12)),
+            Text(_userName),
+            Text(_userLocation, style: TextStyle(fontSize: 12)),
           ],
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Marketplace()),
-                );
-              },
-              icon: const Icon(Icons.search)),
+            onPressed: () {
+              setState(() {
+                _isSearchVisible = !_isSearchVisible;
+              });
+            },
+            icon: const Icon(Icons.search),
+          ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         ],
       ),
@@ -151,6 +160,7 @@ class HomeScreen extends StatelessWidget {
         showSelectedLabels: true,
         showUnselectedLabels: true,
       ),
+      // Your search box and other widgets
     );
   }
 }
