@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:krushi_setu/screens/sign_up.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -19,33 +20,74 @@ class _LoginScreenState extends State<LoginScreen> {
     final emailOrMobile = _emailOrMobileController.text;
     final password = _passwordController.text;
 
-    final response = await http.post(
-      Uri.parse('http://10.150.150.1:5050/api/v1/users/login'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': emailOrMobile,
-        'password': password,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Login Successful')),
+    try {
+      // Step 1: Login
+      final loginResponse = await http.post(
+        Uri.parse('http://10.150.150.1:5050/api/v1/users/login'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': emailOrMobile,
+          'password': password,
+        }),
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } else {
-      final errorResponse = jsonDecode(response.body);
-      final errorMessage = errorResponse['message'] ?? 'Login Failed';
+      if (loginResponse.statusCode == 200) {
+        print('Login successful');
+
+        // Step 2: Fetch user details
+        final userResponse = await http.get(
+          Uri.parse('http://10.150.150.1:5050/api/v1/users'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            // Add any necessary authentication headers here
+          },
+        );
+
+        if (userResponse.statusCode == 200) {
+          final userResponseBody = jsonDecode(userResponse.body);
+          print('User details response: $userResponseBody');
+
+          // Extract user ID from the response
+          String? userId;
+          if (userResponseBody is Map<String, dynamic> &&
+              userResponseBody['data'] is Map<String, dynamic> &&
+              userResponseBody['data']['docs'] is List &&
+              userResponseBody['data']['docs'].isNotEmpty) {
+            userId = userResponseBody['data']['docs'][0]['_id']?.toString();
+          }
+
+          if (userId != null) {
+            // Store user_id using SharedPreferences
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('user_id', userId);
+
+            print('User ID stored: $userId');
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Login Successful')),
+            );
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()),
+            );
+          } else {
+            throw Exception('User ID not found in response');
+          }
+        } else {
+          throw Exception('Failed to fetch user details');
+        }
+      } else {
+        final errorResponse = jsonDecode(loginResponse.body);
+        final errorMessage = errorResponse['message'] ?? 'Login Failed';
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      print('Error during login process: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
+        SnackBar(content: Text('Login Failed: ${e.toString()}')),
       );
     }
   }
