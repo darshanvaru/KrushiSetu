@@ -36,10 +36,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
       //global data updation
       global.Globals.uid = responseBody['data']['user']['id'];
-      print('-------------------------------------------------');
+      global.Globals.token = responseBody['token'];
       print('-------------------------------------------------');
       print('-------------------------------------------------');
       print('${global.Globals.uid}');
+      print('${global.Globals.token}');
+      print('-------------------------------------------------');
+      print('-------------------------------------------------');
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful')),

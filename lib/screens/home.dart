@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:krushi_setu/demo.dart';
+import '../demo.dart';
+import '../services/seller_service.dart'; // Ensure this import is correct
 import '../widgets/category_button.dart';
 import '../widgets/farmer_avater.dart';
 import '../widgets/product_card.dart';
 import '../services/product_service.dart'; // Import the service
 import '../models/product.dart';
 import 'marketplace.dart';
-import 'seller_question.dart'; // Adjust the import path as necessary
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,20 +29,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
     switch (index) {
       case 0:
+      // Handle Home
         break;
       case 1:
+      // Handle Orders
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
       case 2:
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerQuestion()));
+      // Handle Add Button
+        _handleAddButtonPressed();
         break;
       case 3:
+      // Handle Farmers
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
       case 4:
+      // Handle Cart
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
     }
+  }
+
+  void _handleAddButtonPressed() {
+    // Use a method to handle seller status check and navigation
+    SellerService().checkSellerStatus(context);
   }
 
   @override
@@ -74,7 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => const Marketplace()),
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
