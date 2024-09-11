@@ -1,5 +1,3 @@
-// globals.dart
-library my_app.globals;
-
-String userName = 'User';
-String userLocation = 'Location';
+class Globals {
+  static dynamic uid = '';
+}

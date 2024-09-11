@@ -7,6 +7,8 @@ class ProductCard extends StatelessWidget {
   final String sellerName;
   final String productImageUrl;
   final String sellerImageUrl;
+  final String description;
+  final int quantity;
 
   const ProductCard({
     required this.title,
@@ -14,6 +16,8 @@ class ProductCard extends StatelessWidget {
     required this.sellerName,
     required this.productImageUrl,
     required this.sellerImageUrl,
+    required this.description,
+    required this.quantity,
     super.key,
   });
 
@@ -30,6 +34,8 @@ class ProductCard extends StatelessWidget {
               owner: sellerName,
               imageUrl: productImageUrl,
               ownerUrl: sellerImageUrl,
+              description: description,
+              quantity: quantity,
             ),
           ),
         );

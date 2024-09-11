@@ -6,6 +6,8 @@ class ProductDetail extends StatefulWidget {
   final String owner;
   final String imageUrl;
   final String ownerUrl;
+  final String description;
+  final int quantity; // Maximum available quantity
 
   const ProductDetail({
     required this.title,
@@ -13,6 +15,8 @@ class ProductDetail extends StatefulWidget {
     required this.owner,
     required this.imageUrl,
     required this.ownerUrl,
+    required this.description,
+    required this.quantity,
     super.key,
   });
 
@@ -21,16 +25,18 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  int _quantity = 1;
+  int _quantity = 1; // Initial quantity
 
   void _incrementQuantity() {
-    setState(() {
-      _quantity++;
-    });
+    if (_quantity < widget.quantity) { // Ensure quantity doesn't exceed available stock
+      setState(() {
+        _quantity++;
+      });
+    }
   }
 
   void _decrementQuantity() {
-    if (_quantity > 1) {
+    if (_quantity > 1) { // Ensure quantity doesn't go below 1
       setState(() {
         _quantity--;
       });
@@ -75,6 +81,11 @@ class _ProductDetailState extends State<ProductDetail> {
             Text(
               widget.price,
               style: const TextStyle(fontSize: 20, color: Colors.green),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              widget.description,
+              style: const TextStyle(fontSize: 16, color: Colors.black87),
             ),
             const SizedBox(height: 16),
             Row(
@@ -122,7 +133,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                       SizedBox(
-                        width: 40,
+                        width: 60,
                         child: Center(
                           child: Text(
                             '$_quantity',
@@ -144,6 +155,14 @@ class _ProductDetailState extends State<ProductDetail> {
                         ),
                       ),
                     ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  'Available: ${widget.quantity - _quantity}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[700], // Softer color for available quantity
                   ),
                 ),
               ],

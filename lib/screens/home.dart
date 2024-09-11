@@ -1,46 +1,133 @@
 import 'package:flutter/material.dart';
+import 'package:krushi_setu/demo.dart';
 import '../widgets/category_button.dart';
 import '../widgets/farmer_avater.dart';
 import '../widgets/product_card.dart';
 import '../services/product_service.dart'; // Import the service
 import '../models/product.dart';
-import 'marketplace.dart'; // Adjust the import path as necessary
+import 'marketplace.dart';
+import 'seller_question.dart'; // Adjust the import path as necessary
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super .key});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _userName = 'User';
-  String _userLocation = 'Location';
-  bool _isSearchVisible = false;
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchBarVisible = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  int _selectedIndex = 0;
+
+  void _onNavBarTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    switch (index) {
+      case 0:
+        break;
+      case 1:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
+        break;
+      case 2:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerQuestion()));
+        break;
+      case 3:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
+        break;
+      case 4:
+        Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          _isSearchBarVisible = false;
+        });
+      }
+    });
+  }
+
+  void _toggleSearchBar() {
+    setState(() {
+      _isSearchBarVisible = !_isSearchBarVisible;
+      if (_isSearchBarVisible) {
+        FocusScope.of(context).requestFocus(_searchFocusNode);
+      } else {
+        FocusScope.of(context).unfocus();
+      }
+    });
+  }
+
+  void _performSearch() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const Marketplace()),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: const Icon(Icons.person),
-        title: Column(
+        title: const Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(_userName),
-            Text(_userLocation, style: TextStyle(fontSize: 12)),
+            Text("Darshan Varu"),
+            Text("Rajkot", style: TextStyle(fontSize: 12)),
           ],
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              setState(() {
-                _isSearchVisible = !_isSearchVisible;
-              });
-            },
+            onPressed: _toggleSearchBar,
             icon: const Icon(Icons.search),
           ),
           IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
         ],
+        bottom: _isSearchBarVisible
+            ? PreferredSize(
+          preferredSize: const Size.fromHeight(56.0),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: 50.0,
+            curve: Curves.easeInOut,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      focusNode: _searchFocusNode,
+                      decoration: InputDecoration(
+                        hintText: 'Search...',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: _performSearch,
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+            : null,
       ),
       body: SafeArea(
         child: Padding(
@@ -99,6 +186,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             sellerName: product.sellerName,
                             productImageUrl: product.productImageUrl,
                             sellerImageUrl: product.sellerImageUrl,
+                            description: product.description,
+                            quantity: product.quantity,
                           );
                         }).toList(),
                       ),
@@ -155,12 +244,13 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Cart',
           ),
         ],
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.green,
         unselectedItemColor: Colors.grey,
         showSelectedLabels: true,
         showUnselectedLabels: true,
+        onTap: _onNavBarTapped,
       ),
-      // Your search box and other widgets
     );
   }
 }

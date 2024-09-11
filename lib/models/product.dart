@@ -8,6 +8,7 @@ class Product {
   final String sellerName;
   final String productImageUrl;
   final String sellerImageUrl;
+  final String description;
 
   Product({
     required this.id,
@@ -18,7 +19,7 @@ class Product {
     required this.sellerName,
     required this.productImageUrl,
     required this.sellerImageUrl,
-    // tittle, price, desc, summary, category, quantity, seller, created at
+    required this.description,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -33,6 +34,7 @@ class Product {
       sellerName: seller?['name'] as String? ?? 'Unknown Seller',
       productImageUrl: json['productImageUrl'] as String? ?? 'assets/default_image.jpg',
       sellerImageUrl: seller?['photo'] as String? ?? 'assets/default_seller.jpg',
+      description: json['description'] as String? ?? 'No Description',
     );
   }
 }

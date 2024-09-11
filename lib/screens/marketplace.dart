@@ -14,6 +14,7 @@ class Marketplace extends StatefulWidget {
 class _MarketplaceState extends State<Marketplace> {
   List<dynamic> products = [];
   bool isLoading = true;
+  bool hasError = false;
 
   @override
   void initState() {
@@ -23,7 +24,15 @@ class _MarketplaceState extends State<Marketplace> {
 
   Future<void> fetchProducts() async {
     await dotenv.load(fileName: "assets/.env");
-    String apiUrl =  dotenv.env['API_URL']!;
+    final apiUrl = dotenv.env['API_URL'];
+
+    if (apiUrl == null) {
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+      return;
+    }
 
     final url = '$apiUrl/products';
     try {
@@ -31,16 +40,22 @@ class _MarketplaceState extends State<Marketplace> {
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
         setState(() {
-          products = jsonData['data']['docs'];
+          products = jsonData['data']['docs'] ?? [];
           isLoading = false;
         });
       } else {
+        setState(() {
+          isLoading = false;
+          hasError = true;
+        });
         throw Exception('Failed to load products');
       }
     } catch (error) {
       setState(() {
         isLoading = false;
+        hasError = true;
       });
+      print('Error fetching products: $error'); // Add logging for debugging
     }
   }
 
@@ -48,24 +63,40 @@ class _MarketplaceState extends State<Marketplace> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Marketplace'),
-        centerTitle: true,
+        leading: const Icon(Icons.person),
+        title: const Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Darshan Varu"),
+            Text("Rajkot", style: TextStyle(fontSize: 12)),
+          ],
+        ),
+        actions: [
+          IconButton(
+            onPressed: (){},
+            icon: const Icon(Icons.search),
+          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+        ],
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
+          : hasError
+          ? const Center(child: Text('Failed to load products'))
           : ListView.builder(
         itemCount: products.length,
         itemBuilder: (context, index) {
           final product = products[index];
           final productName = product['name'] ?? 'Unknown Product';
           final productPrice = product['price'] != null
-              ? '${product['price']}'
+              ? '₹${product['price']}'
               : 'Unknown Price';
-          final sellerName = product['seller']['name'] ?? 'Unknown Seller';
-          final productImage = (product['images'] != null &&
-              product['images'].isNotEmpty)
+          final sellerName = product['seller']?['name'] ?? 'Unknown Seller';
+          final productImage = (product['images'] != null && product['images'].isNotEmpty)
               ? product['images'][0] // If image exists
               : ''; // Placeholder for missing image
+          final description = product['description'] ?? 'No Description';
+          final quantity = product['quantity'];
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -110,7 +141,7 @@ class _MarketplaceState extends State<Marketplace> {
                           radius: 12,
                           backgroundColor: Colors.grey[200],
                           child: Text(
-                            sellerName[0], // Display first letter of seller's name
+                            sellerName.isNotEmpty ? sellerName[0] : 'U', // Display first letter of seller's name
                             style: const TextStyle(fontSize: 12),
                           ),
                         ),
@@ -136,6 +167,8 @@ class _MarketplaceState extends State<Marketplace> {
                         owner: sellerName,
                         imageUrl: productImage,
                         ownerUrl: '', // Adjust as needed
+                        description: description,
+                        quantity: quantity,
                       ),
                     ),
                   );
