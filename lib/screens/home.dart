@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:krushi_setu/screens/login.dart';
+import 'package:krushi_setu/screens/seller_dashboard.dart';
+import 'package:krushi_setu/screens/seller_question.dart';
 import '../demo.dart';
 import '../services/seller_service.dart'; // Ensure this import is correct
 import '../widgets/category_button.dart';
@@ -16,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool isOpen = false;
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchBarVisible = false;
   final TextEditingController _searchController = TextEditingController();
@@ -37,7 +41,12 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 2:
       // Handle Add Button
-        _handleAddButtonPressed();
+        if (!isOpen) {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerDashboard()));
+        } else {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerQuestion()));
+        }
+        isOpen = !isOpen;
         break;
       case 3:
       // Handle Farmers
@@ -85,6 +94,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _logout() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: _toggleSearchBar,
             icon: const Icon(Icons.search),
           ),
-          IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'logout') {
+                _logout();
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem<String>(
+                value: 'logout',
+                child: Text('Logout'),
+              ),
+            ],
+            icon: const Icon(Icons.menu),
+          ),
         ],
         bottom: _isSearchBarVisible
             ? PreferredSize(
