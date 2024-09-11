@@ -34,7 +34,12 @@ class _LoginScreenState extends State<LoginScreen> {
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
 
+      //global data updation
       global.Globals.uid = responseBody['data']['user']['id'];
+      print('-------------------------------------------------');
+      print('-------------------------------------------------');
+      print('-------------------------------------------------');
+      print('${global.Globals.uid}');
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful')),
