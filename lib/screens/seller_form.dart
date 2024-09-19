@@ -24,7 +24,7 @@ class _SellerFormState extends State<SellerForm> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.push(
               context,
@@ -108,9 +108,9 @@ class _SellerFormState extends State<SellerForm> {
                       "documentType": documentType,
                     };
 
-                    print('-------------------------------------------------');
-                    print('Global data: ${globals.Globals.uid}');
-                    print('-------------------------------------------------');
+                    // print('-------------------------------------------------');
+                    // print('Global data: ${globals.Globals.uid}');
+                    // print('-------------------------------------------------');
 
                     // Send POST request
                     final response = await http.post(
@@ -122,10 +122,10 @@ class _SellerFormState extends State<SellerForm> {
                     );
 
                     // Log response details for debugging
-                    print('-------------------------------------------------');
-                    print('Response status: ${response.statusCode}');
-                    print('Response body: ${response.body}');
-                    print('-------------------------------------------------');
+                    // print('-------------------------------------------------');
+                    // print('Response status: ${response.statusCode}');
+                    // print('Response body: ${response.body}');
+                    // print('-------------------------------------------------');
 
                     if (response.statusCode == 200) {
                       // Successfully sent data
