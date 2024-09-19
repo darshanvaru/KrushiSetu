@@ -10,10 +10,10 @@ class SellerDashboard extends StatefulWidget {
   const SellerDashboard({super.key});
 
   @override
-  _SellerDashboardState createState() => _SellerDashboardState();
+  SellerDashboardState createState() => SellerDashboardState();
 }
 
-class _SellerDashboardState extends State<SellerDashboard> {
+class SellerDashboardState extends State<SellerDashboard> {
   late Future<List<dynamic>> _products;
 
   @override
@@ -41,14 +41,14 @@ class _SellerDashboardState extends State<SellerDashboard> {
         if (data['data'] != null && data['data']['docs'] is List) {
           return data['data']['docs'];
         } else {
-          print('Unexpected data format: ${data['data']}');
+          // print('Unexpected data format: ${data['data']}');
           return [];
         }
       } else {
         throw Exception('Failed to load products: ${response.reasonPhrase}');
       }
     } catch (e) {
-      print('Error fetching products: $e');
+      // print('Error fetching products: $e');
       return [];
     }
   }
@@ -78,7 +78,9 @@ class _SellerDashboardState extends State<SellerDashboard> {
                   children: snapshot.data!.map<Widget>((product) {
                     return ProductCard(
                       title: product['name'] ?? 'No Title',
-                      price: product['price'].toString() ?? 'No Price',
+                      price: product['price'] != null && product['price'].toString().isNotEmpty
+                          ? product['price'].toString()
+                          : "No Price",
                       sellerName: product['seller']['name'] ?? 'No Seller Name',
                       productImageUrl: product['images'].isNotEmpty ? product['images'][0] : '', // Assuming images is a list of URLs
                       sellerImageUrl: '', // No seller image URL provided in JSON

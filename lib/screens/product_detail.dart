@@ -21,10 +21,10 @@ class ProductDetail extends StatefulWidget {
   });
 
   @override
-  _ProductDetailState createState() => _ProductDetailState();
+  ProductDetailState createState() => ProductDetailState();
 }
 
-class _ProductDetailState extends State<ProductDetail> {
+class ProductDetailState extends State<ProductDetail> {
   int _quantity = 1; // Initial quantity
 
   void _incrementQuantity() {
