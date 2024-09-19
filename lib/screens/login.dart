@@ -34,6 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
       }),
     );
 
+    print('-------------------------------------------------');
+    print('-------------------------------------------------');
+    print('${response.statusCode}');
+    print('${response.body}');
+    print('-------------------------------------------------');
+    print('-------------------------------------------------');
+
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
 
@@ -42,8 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       global.Globals.token = responseBody['token'];
       // print('-------------------------------------------------');
       // print('-------------------------------------------------');
-      // print('${global.Globals.uid}');
-      // print('${global.Globals.token}');
+      // print('${responseBody}');
       // print('-------------------------------------------------');
       // print('-------------------------------------------------');
 
