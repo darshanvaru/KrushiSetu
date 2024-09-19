@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:krushi_setu/screens/home.dart';
 import 'package:krushi_setu/screens/review_confirmation.dart';
@@ -93,6 +94,8 @@ class _SellerFormState extends State<SellerForm> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
+                  await dotenv.load(fileName: "assets/.env");
+                  final apiUrl = dotenv.env['API_URL'];
                   if (_formKey.currentState!.validate()) {
                     // Prepare the data
                     final documentType = _selectedOption == 'Land Number'
@@ -111,7 +114,7 @@ class _SellerFormState extends State<SellerForm> {
 
                     // Send POST request
                     final response = await http.post(
-                      Uri.parse('http://10.150.150.1:5050/api/v1/documents'),
+                      Uri.parse('$apiUrl/documents'),
                       headers: <String, String>{
                         'Content-Type': 'application/json; charset=UTF-8',
                       },

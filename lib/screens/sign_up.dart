@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:krushi_setu/screens/login.dart';
+
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -19,6 +21,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _addressController = TextEditingController();
 
   Future<void> _signUp() async {
+    await dotenv.load(fileName: "assets/.env");
+    final apiUrl = dotenv.env['API_URL'];
     if (_passwordController.text != _confirmPasswordController.text) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
@@ -28,7 +32,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.150.150.1:5050/api/v1/users/sign-up'),
+        Uri.parse('$apiUrl/users/sign-up'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

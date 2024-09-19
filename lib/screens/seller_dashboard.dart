@@ -1,6 +1,7 @@
 // seller_dashboard.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../globals.dart';
 import '../widgets/product_card.dart';
@@ -22,9 +23,11 @@ class _SellerDashboardState extends State<SellerDashboard> {
   }
 
   Future<List<dynamic>> fetchProducts() async {
+    await dotenv.load(fileName: "assets/.env");
+    final apiUrl = dotenv.env['API_URL'];
     try {
       final response = await http.get(
-        Uri.parse('http://10.150.150.1:5050/api/v1/products?seller=${Globals.uid}'),
+        Uri.parse('$apiUrl/products?seller=${Globals.uid}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer ${Globals.token}',

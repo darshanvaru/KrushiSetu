@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:krushi_setu/screens/sign_up.dart';
@@ -17,11 +18,13 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   Future<void> _login() async {
+    await dotenv.load(fileName: "assets/.env");
+    final apiUrl = dotenv.env['API_URL'];
     final emailOrMobile = _emailOrMobileController.text;
     final password = _passwordController.text;
 
     final response = await http.post(
-      Uri.parse('http://10.150.150.1:5050/api/v1/users/login'),
+      Uri.parse('$apiUrl/users/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
