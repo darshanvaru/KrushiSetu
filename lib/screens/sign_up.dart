@@ -24,6 +24,8 @@ class _SignupScreenState extends State<SignupScreen> {
     await dotenv.load(fileName: "assets/.env");
     final apiUrl = dotenv.env['API_URL'];
     if (_passwordController.text != _confirmPasswordController.text) {
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Passwords do not match')),
       );
@@ -46,6 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
       );
 
       if (response.statusCode == 201) {
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sign Up Successful')),
         );
@@ -62,15 +65,17 @@ class _SignupScreenState extends State<SignupScreen> {
         } else if (response.statusCode == 500) {
           errorMessage = 'Server error. Please try again ater.';
         }
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),
         );
       }
     } catch (e) {
       // Print exception for debugging
-      print('--------------------------------------');
-      print('Exception: $e');
-      print('--------------------------------------');
+      // print('--------------------------------------');
+      // print('Exception: $e');
+      // print('--------------------------------------');
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('An unexpected error occurred')),
       );
