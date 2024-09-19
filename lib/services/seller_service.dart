@@ -26,10 +26,10 @@ class SellerService {
       if (userResponse.statusCode == 200) {
         final userResponseData = jsonDecode(userResponse.body);
         final userVerificationStatus = userResponseData['data']['docs']['isVerified'];
-        print("_____________________________________________________");
-        print("${userResponse.body}");
-        print("${userVerificationStatus}");
-        print("_____________________________________________________");
+        // print("_____________________________________________________");
+        // print("${userResponse.body}");
+        // print("${userVerificationStatus}");
+        // print("_____________________________________________________");
 
         // Fetch document verification status
         final docResponse = await http.get(
@@ -43,18 +43,18 @@ class SellerService {
         if (docResponse.statusCode == 200) {
           final docResponseData = jsonDecode(docResponse.body);
           final docVerificationStatus = docResponseData['data']['docs']['isVerified'];
-          print("_____________________________________________________");
-          print("${docResponse.body}");
-          print("${docVerificationStatus}");
-          print("_____________________________________________________");
+          // print("_____________________________________________________");
+          // print("${docResponse.body}");
+          // print("${docVerificationStatus}");
+          // print("_____________________________________________________");
 
           // Navigate based on verification status
           if (userVerificationStatus == null || docVerificationStatus == null) {
-            print("_____________________________________________________");
-            print("_____________________________________________________");
-            print("NULL");
-            print("_____________________________________________________");
-            print("_____________________________________________________");
+            // print("_____________________________________________________");
+            // print("_____________________________________________________");
+            // print("NULL");
+            // print("_____________________________________________________");
+            // print("_____________________________________________________");
           } else if (userVerificationStatus) {
             if (docVerificationStatus) {
               // Both user and document are verified
