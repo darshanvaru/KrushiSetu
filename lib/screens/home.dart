@@ -3,7 +3,6 @@ import 'package:krushi_setu/screens/login.dart';
 import 'package:krushi_setu/screens/seller_dashboard.dart';
 import 'package:krushi_setu/screens/seller_question.dart';
 import '../demo.dart';
-import '../services/seller_service.dart'; // Ensure this import is correct
 import '../widgets/category_button.dart';
 import '../widgets/farmer_avater.dart';
 import '../widgets/product_card.dart';
@@ -57,11 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
     }
-  }
-
-  void _handleAddButtonPressed() {
-    // Use a method to handle seller status check and navigation
-    SellerService().checkSellerStatus(context);
   }
 
   @override

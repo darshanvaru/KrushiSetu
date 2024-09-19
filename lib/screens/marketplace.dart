@@ -8,10 +8,10 @@ class Marketplace extends StatefulWidget {
   const Marketplace({super.key});
 
   @override
-  _MarketplaceState createState() => _MarketplaceState();
+  MarketplaceState createState() => MarketplaceState();
 }
 
-class _MarketplaceState extends State<Marketplace> {
+class MarketplaceState extends State<Marketplace> {
   List<dynamic> products = [];
   bool isLoading = true;
   bool hasError = false;
@@ -55,7 +55,7 @@ class _MarketplaceState extends State<Marketplace> {
         isLoading = false;
         hasError = true;
       });
-      print('Error fetching products: $error'); // Add logging for debugging
+      // print('Error fetching products: $error'); // Add logging for debugging
     }
   }
 

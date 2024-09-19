@@ -40,13 +40,14 @@ class _LoginScreenState extends State<LoginScreen> {
       //global data updation
       global.Globals.uid = responseBody['data']['user']['id'];
       global.Globals.token = responseBody['token'];
-      print('-------------------------------------------------');
-      print('-------------------------------------------------');
-      print('${global.Globals.uid}');
-      print('${global.Globals.token}');
-      print('-------------------------------------------------');
-      print('-------------------------------------------------');
+      // print('-------------------------------------------------');
+      // print('-------------------------------------------------');
+      // print('${global.Globals.uid}');
+      // print('${global.Globals.token}');
+      // print('-------------------------------------------------');
+      // print('-------------------------------------------------');
 
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login Successful')),
       );
@@ -58,6 +59,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       final errorResponse = jsonDecode(response.body);
       final errorMessage = errorResponse['message'] ?? 'Login Failed';
+
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(errorMessage)),
       );
