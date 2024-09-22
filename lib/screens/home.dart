@@ -6,9 +6,27 @@ import '../demo.dart';
 import '../widgets/category_button.dart';
 import '../widgets/farmer_avater.dart';
 import '../widgets/product_card.dart';
-import '../services/product_service.dart'; // Import the service
 import '../models/product.dart';
 import 'marketplace.dart';
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
+Future<List<Product>> fetchProducts() async {
+  await dotenv.load(fileName: "assets/.env");
+  String apiUrl =  dotenv.env['API_URL']!;
+
+  final response = await http.get(Uri.parse("$apiUrl/products"));
+
+  if (response.statusCode == 200) {
+    final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+
+    final List<dynamic> productsJson = (jsonResponse['data']['docs'] as List<dynamic>?) ?? [];
+    return productsJson.map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+  } else {
+    throw Exception('Failed to load products');
+  }
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,9 +39,25 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isOpen = false;
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchBarVisible = false;
-  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController(); //for search bar
+  Future<List<Product>>? _productsFuture; // Store the future
 
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Fetch products once when the widget is initialized
+    _productsFuture = fetchProducts(); // Call the API only once
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus) {
+        setState(() {
+          _isSearchBarVisible = false;
+        });
+      }
+    });
+  }
 
   void _onNavBarTapped(int index) {
     setState(() {
@@ -32,14 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
     switch (index) {
       case 0:
-      // Handle Home
         break;
       case 1:
-      // Handle Orders
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
       case 2:
-      // Handle Add Button
         if (!isOpen) {
           Navigator.push(context, MaterialPageRoute(builder: (context) => const SellerDashboard()));
         } else {
@@ -48,26 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
         isOpen = !isOpen;
         break;
       case 3:
-      // Handle Farmers
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
       case 4:
-      // Handle Cart
         Navigator.push(context, MaterialPageRoute(builder: (context) => const Demo()));
         break;
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _searchFocusNode.addListener(() {
-      if (!_searchFocusNode.hasFocus) {
-        setState(() {
-          _isSearchBarVisible = false;
-        });
-      }
-    });
   }
 
   void _toggleSearchBar() {
@@ -85,13 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const Marketplace()),
-    );
-  }
-
-  void _logout() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginScreen()),
     );
   }
 
@@ -115,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'logout') {
-                _logout();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                );
               }
             },
             itemBuilder: (context) => [
@@ -167,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
           child: FutureBuilder<List<Product>>(
-            future: fetchProducts(),
+            future: _productsFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
